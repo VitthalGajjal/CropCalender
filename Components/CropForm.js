@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';  //Install using npm install @react-native-picker/picker
 import cropService from '../Services/CropService';
+import color from '../assets/color';
 
 const CropForm = ({ onFormSubmit }) => {
   const [region, setRegion] = useState('');
@@ -11,7 +12,23 @@ const CropForm = ({ onFormSubmit }) => {
   const [regions, setRegions] = useState([]);
   const [crops, setCrops] = useState([]);
   const [soilTypes, setSoilTypes] = useState([]);
-    const [climateConditions, setClimateConditions] = useState([]);
+  const [climateConditions, setClimateConditions] = useState([]);
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
+
+  // Handle screen dimension changes
+  useEffect(() => {
+    const updateLayout = () => {
+      setScreenWidth(Dimensions.get('window').width);
+    };
+    
+    Dimensions.addEventListener('change', updateLayout);
+    
+    return () => {
+      // Clean up the event listener
+      const dimensionsHandler = Dimensions.addEventListener('change', () => {});
+      dimensionsHandler.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchRegions = async () => {
@@ -42,25 +59,25 @@ const CropForm = ({ onFormSubmit }) => {
 
   useEffect(() => {
     if (crop && region) {
-        const soilTypeList = cropService.getSoilTypesByCropAndRegion(crop, region);
-        setSoilTypes(soilTypeList);
-        if (soilTypeList.length > 0) {
-            setSoilType(soilTypeList[0]); // Set default soil type
-        } else {
-            setSoilType('');
-        }
-        const climateConditionList = cropService.getClimateConditionsByCropAndRegion(crop, region);
-        setClimateConditions(climateConditionList);
-        if (climateConditionList.length > 0) {
-            setClimateCondition(climateConditionList[0]); // Set default climate condition
-        } else {
-            setClimateCondition('');
-        }
+      const soilTypeList = cropService.getSoilTypesByCropAndRegion(crop, region);
+      setSoilTypes(soilTypeList);
+      if (soilTypeList.length > 0) {
+        setSoilType(soilTypeList[0]); // Set default soil type
+      } else {
+        setSoilType('');
+      }
+      const climateConditionList = cropService.getClimateConditionsByCropAndRegion(crop, region);
+      setClimateConditions(climateConditionList);
+      if (climateConditionList.length > 0) {
+        setClimateCondition(climateConditionList[0]); // Set default climate condition
+      } else {
+        setClimateCondition('');
+      }
     } else {
       setSoilTypes([]);
       setSoilType('');
-        setClimateConditions([]);
-        setClimateCondition('');
+      setClimateConditions([]);
+      setClimateCondition('');
     }
   }, [crop, region]);
 
@@ -72,75 +89,142 @@ const CropForm = ({ onFormSubmit }) => {
     }
   };
 
+  // Determine if we're on a tablet
+  const isTablet = screenWidth >= 768;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Region:</Text>
-      <Picker
-        selectedValue={region}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setRegion(itemValue)}
-      >
-        {regions.map((r) => (
-          <Picker.Item key={r} label={r} value={r} />
-        ))}
-      </Picker>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={[styles.container, isTablet && styles.tabletContainer]}>
+        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
+          <Text style={styles.label}>Region:</Text>
+          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
+            <Picker
+              selectedValue={region}
+              style={styles.picker}
+              onValueChange={(itemValue) => setRegion(itemValue)}
+            >
+              {regions.map((r) => (
+                <Picker.Item key={r} label={r} value={r} />
+              ))}
+            </Picker>
+          </View>
+        </View>
 
-      <Text style={styles.label}>Crop:</Text>
-      <Picker
-        selectedValue={crop}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setCrop(itemValue)}
-      >
-        {crops.map((c) => (
-          <Picker.Item key={c.name} label={c.name} value={c.name} />
-        ))}
-      </Picker>
+        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
+          <Text style={styles.label}>Crop:</Text>
+          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
+            <Picker
+              selectedValue={crop}
+              style={styles.picker}
+              onValueChange={(itemValue) => setCrop(itemValue)}
+            >
+              {crops.map((c) => (
+                <Picker.Item key={c.name} label={c.name} value={c.name} />
+              ))}
+            </Picker>
+          </View>
+        </View>
 
-      <Text style={styles.label}>Soil Type:</Text>
-      <Picker
-        selectedValue={soilType}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) => setSoilType(itemValue)}
-      >
-        {soilTypes.map((s) => (
-          <Picker.Item key={s} label={s} value={s} />
-        ))}
-      </Picker>
+        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
+          <Text style={styles.label}>Soil Type:</Text>
+          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
+            <Picker
+              selectedValue={soilType}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSoilType(itemValue)}
+            >
+              {soilTypes.map((s) => (
+                <Picker.Item key={s} label={s} value={s} />
+              ))}
+            </Picker>
+          </View>
+        </View>
 
-        <Text style={styles.label}>Climate Condition:</Text>
-        <Picker
-            selectedValue={climateCondition}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) => setClimateCondition(itemValue)}
-        >
-            {climateConditions.map((c) => (
+        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
+          <Text style={styles.label}>Climate Condition:</Text>
+          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
+            <Picker
+              selectedValue={climateCondition}
+              style={styles.picker}
+              onValueChange={(itemValue) => setClimateCondition(itemValue)}
+            >
+              {climateConditions.map((c) => (
                 <Picker.Item key={c} label={c} value={c} />
-            ))}
-        </Picker>
+              ))}
+            </Picker>
+          </View>
+        </View>
 
-      <Button title="Generate Schedule" onPress={handleSubmit} />
-    </View>
+        <TouchableOpacity 
+          style={[styles.submitButton, isTablet && styles.tabletSubmitButton]} 
+          onPress={handleSubmit}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.submitButtonText}>Generate Schedule</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   container: {
     padding: 16,
+    width: '100%',
+  },
+  tabletContainer: {
+    padding: 24,
+    maxWidth: 600,
+    alignSelf: 'center',
+  },
+  formGroup: {
+    marginBottom: 16,
+  },
+  tabletFormGroup: {
+    marginBottom: 24,
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
+    fontWeight: '500',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
+  pickerContainer: {
     borderWidth: 1,
-    marginBottom: 16,
-    paddingHorizontal: 8,
+    borderColor: color.lightPrimary,
+    borderRadius: 5,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+  },
+  tabletPickerContainer: {
+    borderRadius: 8,
   },
   picker: {
-    marginBottom: 16,
-    color : 'gray', 
+    height: 50,
+    width: '100%',
+    color: '#333',
+  },
+  submitButton: {
+    backgroundColor: color.primaryDark,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  tabletSubmitButton: {
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginTop: 16,
+    maxWidth: 300,
+    alignSelf: 'center',
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import CropForm from '../Components/CropForm';
-import ScheduleCard from '../Components/ScheduleCard';
+import CombinedActivityTimeline from '../Components/ScheduleCard';
 import calendarService from '../Services/CalenderService';
+import color from '../assets/Color';
 
 const HomeScreen = () => {
   const [schedule, setSchedule] = useState([]);
@@ -17,9 +18,7 @@ const HomeScreen = () => {
     <ScrollView style={styles.container}>
       <CropForm onFormSubmit={handleFormSubmit} />
       <View style={styles.scheduleContainer}>
-        {schedule.map((activity, index) => (
-          <ScheduleCard key={index} activity={activity} />
-        ))}
+        <CombinedActivityTimeline activities={schedule} />
       </View>
     </ScrollView>
   );
@@ -29,10 +28,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: color.lightAccent,
   },
   scheduleContainer: {
     marginTop: 20,
+    
   },
 });
 

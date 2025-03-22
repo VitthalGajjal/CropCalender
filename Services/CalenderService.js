@@ -7,7 +7,8 @@ const calendarService = {
         const cropDetails = cropService.getCropDetails(region, cropName);
 
         if (!cropDetails) {
-            return []; // Or handle the error as needed
+            console.warn(`No crop details found for region: ${region}, cropName: ${cropName}`);
+            return []; // Or handle the error as needed (e.g., throw an error)
         }
 
         const schedule = cropDetails.activities.map(activity => {
@@ -16,8 +17,26 @@ const calendarService = {
             startDate.setDate(1); // Start of the month
 
             const durationParts = activity.duration.split(' ');
-            const durationValue = parseInt(durationParts[0]);
-            const durationUnit = durationParts[1].toLowerCase();
+
+            //  Robustly handle cases where duration is missing or in the wrong format
+            if (!durationParts || durationParts.length < 2) {
+                console.warn(`Invalid duration format: ${activity.duration}.  Skipping activity.`);
+                return null; // Skip this activity
+            }
+
+            const durationValue = parseInt(durationParts[0], 10);
+            const durationUnit = durationParts[1]?.toLowerCase(); // Use optional chaining
+
+            // Validate durationValue is a number
+            if (isNaN(durationValue)) {
+                console.warn(`Invalid duration value in duration: ${activity.duration}. Skipping activity.`);
+                return null; // Skip this activity
+            }
+
+            if (!durationUnit) {
+                console.warn(`No duration unit found in duration: ${activity.duration}.  Skipping activity.`);
+                return null; //Skip the current activity if durationUnit is undefined
+            }
 
             let endDate = new Date(startDate);
 
@@ -28,8 +47,8 @@ const calendarService = {
             } else if (durationUnit === 'days') {
                 endDate.setDate(startDate.getDate() + durationValue);
             } else {
-                // Handle other duration units or throw an error
-                console.warn(`Unsupported duration unit: ${durationUnit}`);
+                console.warn(`Unsupported duration unit: ${durationUnit} in duration: ${activity.duration}.  Skipping activity.`);
+                return null; // Skip this activity
             }
 
             return {
@@ -37,7 +56,7 @@ const calendarService = {
                 startDate: startDate.toISOString().slice(0, 10), // Format as YYYY-MM-DD
                 endDate: endDate.toISOString().slice(0, 10)
             };
-        });
+        }).filter(activity => activity !== null); // Remove skipped activities;
 
         return schedule;
     }
