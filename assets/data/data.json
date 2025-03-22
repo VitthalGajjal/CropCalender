@@ -1,0 +1,83 @@
+[
+    {
+      "region": "Coastal Karnataka",
+      "crops": [
+        {
+          "name": "Paddy",
+          "soilTypes": ["Laterite", "Alluvial"],
+          "climateConditions": ["Warm, Humid"],
+          "activities": [
+            {
+              "name": "Seeding",
+              "month": "June",
+              "duration": "2 weeks"
+            },
+            {
+              "name": "Transplanting",
+              "month": "July",
+              "duration": "3 weeks"
+            },
+            {
+              "name": "Fertilizer Application (Urea)",
+              "month": "August",
+              "duration": "1 week"
+            },
+            {
+              "name": "Harvesting",
+              "month": "November",
+              "duration": "4 weeks"
+            }
+          ]
+        },
+        {
+          "name": "Coconut",
+          "soilTypes": ["Laterite", "Sandy"],
+          "climateConditions": ["Warm, Coastal"],
+          "activities": [
+            {
+              "name": "Planting",
+              "month": "June",
+              "duration": "1 month"
+            },
+            {
+              "name": "Fertilizer Application (Organic)",
+              "month": "January",
+              "duration": "2 weeks"
+            },
+             {
+              "name": "Harvesting",
+              "month": "Throughout the year",
+              "duration": "Continuous"
+            }
+          ]
+        }
+      ]
+    },
+    {
+       "region": "Northern India",
+       "crops": [
+        {
+          "name": "Wheat",
+          "soilTypes": ["Alluvial", "Black"],
+          "climateConditions": ["Cool, Dry"],
+          "activities": [
+            {
+              "name": "Seeding",
+              "month": "November",
+              "duration": "2 weeks"
+            },
+            {
+              "name": "Fertilizer Application (DAP)",
+              "month": "January",
+              "duration": "1 week"
+            },
+            {
+              "name": "Harvesting",
+              "month": "April",
+              "duration": "4 weeks"
+            }
+          ]
+        }
+       ]
+    }
+  ]
