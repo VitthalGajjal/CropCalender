@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, ScrollView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';  //Install using npm install @react-native-picker/picker
 import cropService from '../Services/CropService';
-import color from '../assets/color';
+import color from '../assets/Color';
 
 const CropForm = ({ onFormSubmit }) => {
   const [region, setRegion] = useState('');
