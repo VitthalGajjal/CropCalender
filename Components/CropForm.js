@@ -82,8 +82,8 @@ const CropForm = ({ onFormSubmit }) => {
   }, [crop, region]);
 
   const handleSubmit = () => {
-    if (region && crop && soilType && climateCondition) {
-      onFormSubmit({ region, crop, soilType, climateCondition });
+    if (region && crop ) {
+      onFormSubmit({ region, crop });
     } else {
       alert('Please fill in all fields.');
     }
@@ -125,35 +125,7 @@ const CropForm = ({ onFormSubmit }) => {
           </View>
         </View>
 
-        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
-          <Text style={styles.label}>Soil Type:</Text>
-          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
-            <Picker
-              selectedValue={soilType}
-              style={styles.picker}
-              onValueChange={(itemValue) => setSoilType(itemValue)}
-            >
-              {soilTypes.map((s) => (
-                <Picker.Item key={s} label={s} value={s} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-
-        <View style={[styles.formGroup, isTablet && styles.tabletFormGroup]}>
-          <Text style={styles.label}>Climate Condition:</Text>
-          <View style={[styles.pickerContainer, isTablet && styles.tabletPickerContainer]}>
-            <Picker
-              selectedValue={climateCondition}
-              style={styles.picker}
-              onValueChange={(itemValue) => setClimateCondition(itemValue)}
-            >
-              {climateConditions.map((c) => (
-                <Picker.Item key={c} label={c} value={c} />
-              ))}
-            </Picker>
-          </View>
-        </View>
+        
 
         <TouchableOpacity 
           style={[styles.submitButton, isTablet && styles.tabletSubmitButton]} 
